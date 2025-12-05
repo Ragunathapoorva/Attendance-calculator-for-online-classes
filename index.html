@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <h1 class="header-title">Attendance Calculator</h1>
+                    <nav class="nav">
+                        <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+                        <button class="nav-btn" data-view="calculator">Manual Calculator</button>
+                        <button class="nav-btn" data-view="students">Manage Students</button>
+                        <button class="nav-btn" data-view="attendance">Mark Attendance</button>
+                        <button class="nav-btn" data-view="reports">Reports</button>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Dashboard View -->
+                <div id="dashboard-view" class="view active">
+                    <div class="dashboard-header">
+                        <h2>Dashboard</h2>
+                        <p class="text-secondary">Overview of attendance statistics and quick calculator</p>
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <!-- Stats Section -->
+                        <div class="dashboard-stats">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="total-students">0</div>
+                                    <div class="stat-label">Total Students</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value" id="avg-attendance">0%</div>
+                                    <div class="stat-label">Average Attendance</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value" id="low-attendance-count">0</div>
+                                    <div class="stat-label">Low Attendance (&lt;75%)</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value" id="total-records">0</div>
+                                    <div class="stat-label">Total Records</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Calculator Widget -->
+                        <div class="quick-calculator-widget">
+                            <h3>Quick Attendance Calculator</h3>
+                            <div class="calculator-inputs">
+                                <div class="form-group">
+                                    <label class="form-label" for="widget-attended">Classes Attended</label>
+                                    <input type="number" id="widget-attended" class="form-control" min="0" placeholder="Enter classes attended">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="widget-total">Total Classes</label>
+                                    <input type="number" id="widget-total" class="form-control" min="1" placeholder="Enter total classes">
+                                </div>
+                            </div>
+                            <div class="calculator-result" id="widget-result">
+                                <div class="result-percentage">--%</div>
+                                <div class="result-status">Enter values to calculate</div>
+                            </div>
+                            <div class="calculator-actions">
+                                <button class="btn btn--secondary btn--sm" id="widget-clear">Clear</button>
+                                <button class="btn btn--primary btn--sm" onclick="window.app.switchView('calculator')">Open Full Calculator</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div id="recent-attendance" class="activity-list">
+                            <!-- Recent attendance records will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manual Calculator View -->
+                <div id="calculator-view" class="view">
+                    <div class="section-header">
+                        <div>
+                            <h2>Manual Attendance Calculator</h2>
+                            <p class="text-secondary">Calculate attendance percentage manually</p>
+                        </div>
+                    </div>
+
+                    <div class="calculator-container">
+                        <div class="calculator-main">
+                            <div class="calculator-card">
+                                <h3>Attendance Calculator</h3>
+                                <div class="formula-display">
+                                    <strong>Formula:</strong> (Classes Attended ÷ Total Classes) × 100
+                                </div>
+                                
+                                <div class="calculator-inputs">
+                                    <div class="form-group">
+                                        <label class="form-label" for="calc-attended">Classes Attended</label>
+                                        <input type="number" id="calc-attended" class="form-control" min="0" placeholder="Enter number of classes attended">
+                                        <div class="input-error" id="attended-error"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="calc-total">Total Classes</label>
+                                        <input type="number" id="calc-total" class="form-control" min="1" placeholder="Enter total number of classes">
+                                        <div class="input-error" id="total-error"></div>
+                                    </div>
+                                </div>
+
+                                <div class="calculator-buttons">
+                                    <button class="btn btn--primary btn--full-width" id="calc-calculate">Calculate Percentage</button>
+                                    <button class="btn btn--secondary btn--full-width" id="calc-clear">Clear All</button>
+                                </div>
+                            </div>
+
+                            <div class="calculator-result-card">
+                                <h3>Result</h3>
+                                <div class="result-display" id="calc-result">
+                                    <div class="result-percentage">--%</div>
+                                    <div class="result-status">Enter values and click Calculate</div>
+                                    <div class="result-details"></div>
+                                </div>
+                                <div class="color-legend">
+                                    <div class="legend-item">
+                                        <span class="legend-color excellent"></span>
+                                        <span>Excellent (90%+)</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color good"></span>
+                                        <span>Good (75-89%)</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color poor"></span>
+                                        <span>Poor (60-74%)</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color critical"></span>
+                                        <span>Critical (&lt;60%)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="calculation-history">
+                            <h3>Recent Calculations</h3>
+                            <div id="calc-history" class="history-list">
+                                <!-- Recent calculations will be displayed here -->
+                            </div>
+                            <button class="btn btn--outline btn--sm" id="clear-history">Clear History</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Management View -->
+                <div id="students-view" class="view">
+                    <div class="section-header">
+                        <div>
+                            <h2>Manage Students</h2>
+                            <p class="text-secondary">Add, edit, or remove students from the system</p>
+                        </div>
+                        <button class="btn btn--primary" id="add-student-btn">
+                            <span class="btn-icon">+</span>
+                            Add Student
+                        </button>
+                    </div>
+                    
+                    <div class="search-box">
+                        <input type="text" id="student-search" class="form-control" placeholder="Search students...">
+                    </div>
+
+                    <div id="students-list" class="students-grid">
+                        <!-- Students will be displayed here -->
+                    </div>
+                </div>
+
+                <!-- Mark Attendance View -->
+                <div id="attendance-view" class="view">
+                    <div class="section-header">
+                        <div>
+                            <h2>Mark Attendance</h2>
+                            <p class="text-secondary">Record daily attendance for students</p>
+                        </div>
+                        <div class="attendance-controls">
+                            <input type="date" id="attendance-date" class="form-control" style="width: auto;">
+                            <button class="btn btn--secondary" id="bulk-present">Mark All Present</button>
+                        </div>
+                    </div>
+
+                    <div id="attendance-list" class="attendance-grid">
+                        <!-- Attendance marking interface will be displayed here -->
+                    </div>
+                </div>
+
+                <!-- Reports View -->
+                <div id="reports-view" class="view">
+                    <div class="section-header">
+                        <div>
+                            <h2>Attendance Reports</h2>
+                            <p class="text-secondary">View comprehensive attendance data and export reports</p>
+                        </div>
+                        <div class="reports-actions">
+                            <!-- Calculator widget in reports -->
+                            <div class="reports-calculator-widget">
+                                <h4>Quick Calculator</h4>
+                                <div class="inline-calculator">
+                                    <input type="number" id="report-attended" class="form-control form-control--sm" placeholder="Attended" min="0">
+                                    <span>/</span>
+                                    <input type="number" id="report-total" class="form-control form-control--sm" placeholder="Total" min="1">
+                                    <span>=</span>
+                                    <div class="inline-result" id="report-calc-result">--%</div>
+                                </div>
+                            </div>
+                            <button class="btn btn--primary" id="export-csv">
+                                <span class="btn-icon">⬇</span>
+                                Export CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="attendance-table">
+                            <thead>
+                                <tr>
+                                    <th class="sortable" data-sort="name">Student Name</th>
+                                    <th class="sortable" data-sort="studentId">Student ID</th>
+                                    <th class="sortable" data-sort="class">Class</th>
+                                    <th class="sortable" data-sort="total">Total Days</th>
+                                    <th class="sortable" data-sort="present">Present</th>
+                                    <th class="sortable" data-sort="absent">Absent</th>
+                                    <th class="sortable" data-sort="late">Late</th>
+                                    <th class="sortable" data-sort="percentage">Attendance %</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reports-table-body">
+                                <!-- Reports data will be displayed here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Adding/Editing Student -->
+    <div id="student-modal" class="modal hidden">
+        <div class="modal-overlay" id="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Add Student</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <form id="student-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="student-name">Student Name</label>
+                        <input type="text" id="student-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="student-id">Student ID</label>
+                        <input type="text" id="student-id-input" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="student-class">Class/Grade</label>
+                        <input type="text" id="student-class" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn--secondary" id="cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn--primary" id="save-btn">Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content confirm-modal">
+            <div class="modal-body">
+                <h4 id="confirm-title">Confirm Action</h4>
+                <p id="confirm-message">Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" id="confirm-cancel">Cancel</button>
+                <button type="button" class="btn btn--primary" id="confirm-ok">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
